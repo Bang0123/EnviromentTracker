@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="WcfRestfulservice.Measurements" CodeBehind="Measurements.svc.cs" %>

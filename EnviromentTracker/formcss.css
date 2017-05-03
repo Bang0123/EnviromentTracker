@@ -1,0 +1,56 @@
+#graph
+{
+    float: right;
+    padding-right: 5%;
+    padding-bottom: 5%;
+}
+#menutd1
+{
+    padding: 10px;
+}
+#menutd2
+{
+    padding: 10px;
+}
+#menutd3
+{
+    padding: 10px;
+}
+
+#Menu{
+    border: 3px solid black;
+    padding-left: 100px;
+    margin-left: 50px;
+    padding-right: 5%;
+    padding-top: 0%;
+    padding-bottom: 5%;
+    align-items:center;
+
+}
+#menumenu{
+    padding-left:80px;
+    color: black;
+
+}
+#menutd1{
+padding-left: 70px;
+}
+#menutd2{
+    padding-left: 77px;
+}
+#menutd3{
+    padding-left: 47px;
+}
+#apidiv{
+    padding-top:5%;
+    margin-right: 10px;;
+}
+.wrapper{
+    text-align: center;
+}
+#forsidenavn{
+    margin-left: 1%;
+    color: black;
+}
+
+

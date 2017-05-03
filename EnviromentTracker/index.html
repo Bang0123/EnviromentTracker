@@ -1,0 +1,492 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Enviroment Tracker</title>
+    <style type="text/css">
+        body, html {
+            font-family: sans-serif;
+        }
+    </style>
+    <script src="Assets/JsLibary/vis.js"></script>
+    <link href="Assets/JsLibary/vis-timeline-graph2d.min.css"  rel="stylesheet" type="text/css"/>
+    <link href="formcss.css" rel="stylesheet" type="text/css"/>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  </head>
+<body>
+<h2 id="forsidenavn">Enviroment Tracker</h2>
+<div style="width:800px; font-size:14px; text-align: justify;">
+</div>
+<br/>
+<div class="container col-sm-4">
+    <div class="panel panel-primary">
+        <div class="panel-heading">Menu</div>
+        <div class="panel-body">
+            <div class="wrapper">
+            <div id="buttonholder" class="btn-group-vertical" role="group" aria-label="Vertical button group">
+                <button type="button" onclick="SeeMoreData()" class="btn btn-danger">Se mere data</button>
+                <button type="button" onclick="SamData()" class="btn btn-warning">Sammenlign data</button>
+                <button type="button" onclick="SeLokaler()" class="btn btn-success">Se lokaler</button>
+            </div>
+            <div id="apidiv">Vejret i:
+                <input type="text" id="awxSearchTextBox" placeholder="Bynavn" />
+                <input id="awxSearchButton" class="btn btn-info" type="submit" value="Søg" >
+                    <h3 id="h3overskrift">Vejret lige nu:</h3>
+                    <span id="awxWeatherInfo"></span>
+                    <span id="awxLocationInfo"></span>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+<table id="graph">
+    <col width="600">
+    <col width="220">
+    <tr>
+        <td style="padding-right: 20px; border-right: 1px solid;">
+            <div id="visualization"></div>
+        </td>
+
+        <td style="padding-left: 5px;">
+            <table id="minigraph" style="font-size: 12px;">
+                <col width="150">
+                <col width="50">
+                <tr>
+                    <td>Line Color</td>
+                    <td>
+                        <select id="color" onchange="updateStyle()">
+                            <option value="stroke:green;" selected="selected">green</option>
+                            <option value="stroke:red;">red</option>
+                            <option value="stroke:blue;">blue</option>
+                            <option value="stroke:black;">black</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Line Style</td>
+                    <td>
+                        <select id="line" onchange="updateStyle()">
+                            <option value="stroke-dasharray:1 0;" selected="selected">line</option>
+                            <option value="stroke-dasharray:10 10;">dash</option>
+                            <option value="stroke-dasharray:2 2;">dot</option>
+                            <option value="stroke-dasharray:10 5 2 5;">dash-dot</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Line thickness</td>
+                    <td>
+                        <select id="thickness" onchange="updateStyle()">
+                            <option value="stroke-width:0;">0</option>
+                            <option value="stroke-width:1;">1</option>
+                            <option value="stroke-width:2;" selected="selected">2</option>
+                            <option value="stroke-width:3;">3</option>
+                            <option value="stroke-width:4;">4</option>
+                            <option value="stroke-width:5;">5</option>
+                            <option value="stroke-width:6;">6</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Fill Position</td>
+                    <td>
+                        <select id="fill" onchange="updateStyle()">
+                            <option value="">none</option>
+                            <option value="top">top</option>
+                            <option value="bottom">bottom</option>
+                            <option value="zero" selected="selected">zero</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Fill Color</td>
+                    <td>
+                        <select id="fillcolor" onchange="updateStyle()">
+                            <option value="fill:green;" selected="selected">green</option>
+                            <option value="fill:red;">red</option>
+                            <option value="fill:blue;">blue</option>
+                            <option value="fill:black;">black</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Fill Opacity</td>
+                    <td>
+                        <select id="fillopacity" onchange="updateStyle()">
+                            <option value="fill-opacity:0.0;" selected="selected">0.0</option>
+                            <option value="fill-opacity:0.1;">0.1</option>
+                            <option value="fill-opacity:0.2;">0.2</option>
+                            <option value="fill-opacity:0.3;">0.3</option>
+                            <option value="fill-opacity:0.4;">0.4</option>
+                            <option value="fill-opacity:0.5;">0.5</option>
+                            <option value="fill-opacity:0.6;">0.6</option>
+                            <option value="fill-opacity:0.7;">0.7</option>
+                            <option value="fill-opacity:0.8;">0.8</option>
+                            <option value="fill-opacity:0.9;">0.9</option>
+                            <option value="fill-opacity:1;">1</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Points Shape</td>
+                    <td>
+                        <select id="points" onchange="updateStyle()">
+                            <option value="">none</option>
+                            <option value="circle">circle</option>
+                            <option value="square" selected="selected">square</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Points Size</td>
+                    <td>
+                        <select id="pointsize" onchange="updateStyle()">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6" selected="selected">6</option>
+                            <option value="8">8</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Points Color</td>
+                    <td>
+                        <select id="pointcolor" onchange="updateStyle()">
+                            <option value="stroke:green;" selected="selected">green</option>
+                            <option value="stroke:red;">red</option>
+                            <option value="stroke:blue;">blue</option>
+                            <option value="stroke:black;">black</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Point Line Thickness</td>
+                    <td>
+                        <select id="pointthickness" onchange="updateStyle()">
+                            <option value="stroke-width:0;">0</option>
+                            <option value="stroke-width:1;">1</option>
+                            <option value="stroke-width:2;" selected="selected">2</option>
+                            <option value="stroke-width:3;">3</option>
+                            <option value="stroke-width:4;">4</option>
+                            <option value="stroke-width:5;">5</option>
+                            <option value="stroke-width:6;">6</option>
+                        </select>
+                    </td>
+                <tr>
+                </tr>
+                <td>Points Fill Color</td>
+                <td>
+                    <select id="pointfill" onchange="updateStyle()">
+                        <option value="fill:green;" selected="selected">green</option>
+                        <option value="fill:red;">red</option>
+                        <option value="fill:blue;">blue</option>
+                        <option value="fill:black;">black</option>
+                    </select>
+                </td>
+                </tr>
+                <p>Dato: <input type="text" onchange="GetDateObjects()" id="datepicker"></p>
+                <input id="Checkbox201" value="true" type="checkbox" onchange="GetDateObjects()" data-reverse><span> Vis 201</span></br>
+                <input id="Checkbox203" value="true" type="checkbox" onchange="GetDateObjects()" data-reverse><span> Vis 203</span></br>
+                <input id="CheckboxBar" value="true" type="checkbox" onchange="GetDateObjects()" data-reverse><span> Vis histogram</span></br>
+            </table>
+        </td>
+    </tr>
+</table>
+<script type="text/javascript"  >
+
+
+
+    function SeLokaler() {
+        var url = 'php/SeLokaler.php';
+        window.location=url;
+    }
+
+    function SamData() {
+        var url = 'php/SammenlignData.php?';
+        window.location=url;
+    }
+
+    function SeeMoreData() {
+        var dato = document.getElementById("datepicker").value;
+        var url = 'php/databasecode.php?date=' + dato;
+        window.location=url;
+    }
+
+
+    $(function () {
+
+        var isMetric = true;
+        var locationUrl = "";
+        var currentConditionsUrl = "";
+        var currentLocationKey = "";
+
+        var language = "da";
+
+        var apiKey = "apcphlMLHmJA1OOZ7ctz7OORIEe6WwVo";
+
+        var awxClearMessages = function() {
+            $("#awxLocationInfo").html("...");
+            $("#awxWeatherInfo").html("...");
+        }
+
+        var awxCityLookUp = function (freeText) {
+            awxClearMessages();
+            locationUrl = "http://dataservice.accuweather.com/locations/v1/search?apikey=" + apiKey + "&q=" + freeText;
+            currentLocationKey = freeText;
+            $.ajax({
+                type: "GET",
+                url: locationUrl,
+                dataType: "jsonp",
+                cache: true,                    // Use cache for better reponse times
+                jsonpCallback: "awxCallback",   // Prevent unique callback name for better reponse times
+                success: function (data) { awxCityLookUpFound(data); }
+            });
+        };
+
+        var awxCityLookUpFound = function (data) {
+            var msg, locationKey = null;
+
+            if (data.length == 1) {
+                locationKey = data[0].Key;
+                msg ="<b>" + data[0].LocalizedName + "</b>";
+            }
+            else if(data.length == 0) {
+                msg = "No locations found."
+            }
+            else {
+                locationKey = data[0].Key;
+                msg = data[0].LocalizedName + "  " + data[0].Country.ID;
+            }
+
+            $("#awxLocationInfo").html(msg);
+            if(locationKey != null) {
+                awxGetCurrentConditions(locationKey);
+            }
+
+        };
+
+        var awxGetCurrentConditions = function (locationKey) {
+            currentConditionsUrl = "http://dataservice.accuweather.com/currentconditions/v1/" + locationKey + "?apikey=" + apiKey + "&language=" + language;
+            $.ajax({
+                type: "GET",
+                url: currentConditionsUrl,
+                dataType: "jsonp",
+                cache: true,                    // Use cache for better reponse times
+                jsonpCallback: "awxCallback",   // Prevent unique callback name for better reponse times
+                success: function (data) {
+                    var html;
+                    if(data && data.length > 0) {
+                        var conditions = data[0];
+                        var temp = isMetric ? conditions.Temperature.Metric : conditions.Temperature.Imperial;
+                        html = conditions.WeatherText + "   " + temp.Value + " " + temp.Unit +", ";
+                    }
+                    else {
+                        html = "N/A";
+                    }
+                    $("#awxWeatherInfo").html(html);
+                }
+            });
+        };
+
+        $("#awxSearchTextBox").keypress(function (e) {
+            if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+                var text = $("#awxSearchTextBox").val();
+                awxCityLookUp(text);
+                return false;
+            } else {
+                return true;
+            }
+        });
+
+        $("#awxSearchButton").click(function () {
+            var text = $("#awxSearchTextBox").val();
+            awxCityLookUp(text);
+        });
+        window.onload = function DoOnLoad() {
+            awxCityLookUp("Roskilde");
+        }
+
+    });
+
+</script>
+<script type="text/javascript">
+
+    $( function() {
+        $.datepicker.setDefaults({ dateFormat: 'yy-mm-dd' });
+        $( "#datepicker" ).datepicker();
+    })
+
+    var container = document.getElementById('visualization');
+    var options = {
+        start: '2016-12-01 12:00:00',
+        end: '2016-12-01 15:00:00',
+        dataAxis: {
+            showMinorLabels: false,
+            icons: true
+        }
+    };
+    function parseDate(input) {
+        var d = Date.parse(input);
+        var dated = new Date(d);
+        var datestr = dated.getFullYear()+ '-' + (dated.getMonth()+1)+ '-' + dated.getDate()+ ' ' + dated.getHours()+ ':' + dated.getMinutes() + ':' + dated.getSeconds();
+
+        return datestr;
+    }
+
+    var groupData = {
+        id: 0,
+        content: "Group Name",
+        options: {
+            drawPoints: {
+                style: 'square' // square, circle
+            },
+            shaded: {
+                orientation: 'zero' // top, bottom
+            }
+        }
+    };
+    var groupData2 = {
+        id: 1,
+        content: "Group Name",
+        options: {
+            drawPoints: {
+                style: 'circle' // square, circle
+            },
+            shaded: {
+                orientation: 'zero' // top, bottom
+            }
+        }
+    };
+    function SetOptions(date) {
+        var barStyle = document.getElementById('CheckboxBar').checked;
+        if (barStyle){
+            options = {
+                style: "bar",
+                start: date + ' 00:00:00',
+                end: date  + ' 23:59:59',
+                dataAxis: {
+                    showMinorLabels: false,
+                    icons: true
+                }
+            };
+        }
+        else {
+            options = {
+                start: date + ' 00:00:00',
+                end: date  + ' 23:59:59',
+                dataAxis: {
+                    showMinorLabels: false,
+                    icons: true
+                }
+            };
+        }
+        graph2d.setOptions(options);
+    }
+
+
+    function GetDateCallback(items) {
+        dataset.clear();
+        dataset.add(items);
+    }
+    function GetDateObjects() {
+        var dato = document.getElementById("datepicker").value;
+        var cb201 = document.getElementById("Checkbox201").checked;
+        var cb203 = document.getElementById("Checkbox203").checked;
+        SetOptions(dato);
+        var items = [];
+        //var DateUrl = "http://eviromentwebservice.azurewebsites.net/api/date/" + dato;
+        var DateUrl = "php/dategetter.php?date=" + dato;
+        console.log(DateUrl);
+        $.ajax({
+            type: 'GET',
+            url: DateUrl,
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                var parsedJson = JSON.parse(data);
+                for (var key in parsedJson){
+                    if (parsedJson.hasOwnProperty(key)){
+                        if (parsedJson[key].LokaleId == 201 && cb201)  {
+                            var dato = parseDate(parsedJson[key].Tid);
+                            var temp = parseInt(parsedJson[key].Temp);
+                            items.push({x: dato, y: temp, group: 0});
+                        }
+                        if (parsedJson[key].LokaleId == 203 && cb203){
+                            var dato = parseDate(parsedJson[key].Tid);
+                            var temp = parseInt(parsedJson[key].Temp);
+                            items.push({x: dato, y: temp, group: 1});
+                       }
+                    }
+                }
+                GetDateCallback(items);
+            },
+            error: function (res) { console.log("error success wasnt reached, printing response:");
+            console.log(res);
+            }
+        });
+    }
+
+    var dataset = new vis.DataSet();
+
+    var groups = new vis.DataSet();
+    groups.add(groupData);
+    groups.add(groupData2);
+    var graph2d = new vis.Graph2d(container, dataset, groups, options);
+    updateStyle();
+
+    function updateStyle() {
+
+        groupData.style = "";
+        groupData.style += document.getElementById("color").value;
+        groupData.style += document.getElementById("line").value;
+        groupData.style += document.getElementById("thickness").value;
+
+        groupData.options.drawPoints = {};
+        groupData.options.drawPoints.styles = "";
+        groupData.options.drawPoints.style = document.getElementById("points").value;
+        groupData.options.drawPoints.styles += document.getElementById("pointcolor").value;
+        groupData.options.drawPoints.styles += document.getElementById("pointthickness").value;
+        groupData.options.drawPoints.styles += document.getElementById("pointfill").value;
+        groupData.options.drawPoints.size = Number(document.getElementById("pointsize").value);
+        if (groupData.options.drawPoints.style == "") {
+            groupData.options.drawPoints = false;
+        }
+
+        groupData.options.shaded = {};
+        groupData.options.shaded.style = "";
+        groupData.options.shaded.style += document.getElementById("fillcolor").value;
+        groupData.options.shaded.style += document.getElementById("fillopacity").value;
+        groupData.options.shaded.orientation = document.getElementById("fill").value;
+        if (groupData.options.shaded.orientation == "") {
+            groupData.options.shaded = false;
+        }
+
+        var groups = new vis.DataSet();
+        groups.add(groupData);
+        graph2d.setGroups(groups);
+    }
+
+</script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</body>
+</html>
